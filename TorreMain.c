@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <stdbool.h> 
 
+//Variáveis globais para controle do jogo --------------------
+//variável que controla o número de discos da torre
+static int numeroDeDiscos;
+static int vitoria = 0;
+
 // definindo as structs ----------
 // struct do tipo No, representa cada no presente na pilh
 typedef struct tNo{
@@ -16,6 +21,7 @@ typedef struct tPilha {
 
 
 // Esqueleto das funcoes -----------
+void colocarDiscos(tPilha*);
 void inicializandoPilha(tPilha*);
 tPilha criarPilha();
 void push(int,tPilha*);
@@ -23,6 +29,7 @@ void pop(tPilha*);
 void moverNo(int, tPilha*, tPilha*);
 bool verificarMaior(int, tPilha*);
 void exibirPilha(tPilha*);
+void exibirPilhas(tPilha*,tPilha*,tPilha*);
 
 // Funcao main -----------
 int main(int argc, char *argv[]) {
@@ -30,6 +37,12 @@ int main(int argc, char *argv[]) {
 	tPilha pilhaB = criarPilha();
 	tPilha pilhaC = criarPilha();
 
+	int teste;
+	//Pergunta o valor de discos ao usuário
+	printf("Quantos discos você deseja: ");
+	scanf("%d", &numeroDeDiscos);
+	colocarDiscos(&pilhaA);
+	/*
 	// passando o endereço da variável como parametro
     // Inicializando pilha A com os valores iniciais
 	push(5,&pilhaA);
@@ -41,18 +54,15 @@ int main(int argc, char *argv[]) {
 	// Movimentos teste na Torre (pode tirar depois isso 👇🏼)
     moverNo(1, &pilhaA, &pilhaB);
     moverNo(2, &pilhaA, &pilhaC);
-
+	*/
 	// imprimindo as pilhas
+	do{
     printf("\n===============================\n");
     printf("-------TORRE DE HANOI--------\n");
-    printf("\nPilha A\n");
-	exibirPilha(&pilhaA);
-	printf("\n\nPilha B\n");
-	exibirPilha(&pilhaB);
-    printf("\n\nPilha C\n");
-    exibirPilha(&pilhaC);
-
-	printf("===============================");
+	exibirPilhas(&pilhaA,&pilhaB,&pilhaC);
+	scanf("%d",&teste);
+	printf("\n===============================\n");
+	}while(vitoria != 1);
 
 	return 0;
 }
@@ -61,6 +71,14 @@ int main(int argc, char *argv[]) {
 //  inicializando a pilha, fazendo o topo dela fica vazio, ou seja, apontar para null
 void inicializarPilha(tPilha *p) {
 	p->topo = NULL;
+}
+
+// coloca os discos na pilha inicial
+void colocarDiscos(tPilha *p) {
+	int v = numeroDeDiscos;
+	for(int i=v;i>0;i--) {
+		push(i,p);
+	}
 }
 
 // funcao de criar pilha
@@ -158,9 +176,13 @@ bool verificarMaior(int valor, tPilha *pilhaDestino) {
 // funcao que imprime todos os valores presentes na pilha
 void exibirPilha(tPilha *p) {
 	tNo *ptr = p->topo;
+	int v = numeroDeDiscos;
 	
 	if (ptr == NULL) {
-		printf("\nA pilha esta vazia!");
+		for(int i=v;i>0;i--) {
+			printf("0");
+			printf("\n");
+		}
 		return;
 	} else {
 		// percorrendo toda a pilha e printando o valor de cada no
@@ -170,4 +192,13 @@ void exibirPilha(tPilha *p) {
 			printf("\n");
 		}
 	}
+}
+
+void exibirPilhas(tPilha *p1, tPilha *p2, tPilha *p3) {
+	printf("\nTorre 1\n");
+	exibirPilha(p1);
+	printf("\n\nTorre 2\n");
+	exibirPilha(p2);
+    printf("\n\nTorre 3\n");
+    exibirPilha(p3);
 }
