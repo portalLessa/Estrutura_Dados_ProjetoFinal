@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h> 
 
 // definindo as structs ----------
-// struct do tipo No, representa cada no presente na pilha
+// struct do tipo No, representa cada no presente na pilh
 typedef struct tNo{
 	int valor;
 	struct tNo *prox; 
@@ -19,28 +20,40 @@ void inicializandoPilha(tPilha*);
 tPilha criarPilha();
 void push(int,tPilha*);
 void pop(tPilha*);
+void moverNo(int, tPilha*, tPilha*);
+bool verificarMaior(int, tPilha*);
 void exibirPilha(tPilha*);
 
 // Funcao main -----------
 int main(int argc, char *argv[]) {
 	tPilha pilhaA = criarPilha();
 	tPilha pilhaB = criarPilha();
-	
+	tPilha pilhaC = criarPilha();
+
 	// passando o endereço da variável como parametro
-	push(1,&pilhaA);
-	push(2,&pilhaA);
+    // Inicializando pilha A com os valores iniciais
+	push(5,&pilhaA);
+	push(4,&pilhaA);
 	push(3,&pilhaA);	
-	push(5,&pilhaB);
-	push(1,&pilhaB);
-	// impeimindo as pilhas
+	push(2,&pilhaA);
+	push(1,&pilhaA);
+
+	// Movimentos teste na Torre (pode tirar depois isso 👇🏼)
+    moverNo(1, &pilhaA, &pilhaB);
+    moverNo(2, &pilhaA, &pilhaC);
+
+	// imprimindo as pilhas
+    printf("\n===============================\n");
+    printf("-------TORRE DE HANOI--------\n");
+    printf("\nPilha A\n");
 	exibirPilha(&pilhaA);
 	printf("\n\nPilha B\n");
 	exibirPilha(&pilhaB);
-	printf("\n");
-	// desempilhando elementos para teste
-	pop(&pilhaA);
-	printf("\nPilha A apos o POP\n");
-	exibirPilha(&pilhaA);
+    printf("\n\nPilha C\n");
+    exibirPilha(&pilhaC);
+
+	printf("===============================");
+
 	return 0;
 }
 
@@ -99,6 +112,47 @@ void pop(tPilha *p) {
 		// liberando o alocamento da refencia 
 		free(ptr);
 	}
+}
+
+// Função para mover um nó de uma pilha para outra
+void moverNo(int valor, tPilha *pilhaOrigem, tPilha *pilhaDestino) {
+    // Verifica se a pilha de origem não está vazia
+    if (pilhaOrigem->topo == NULL) {
+        printf("\nPilha de origem vazia. Nada a mover.\n");
+        return;
+    }
+
+    // Verifica se o valor desejado está no topo da pilha de origem
+    if (pilhaOrigem->topo->valor != valor) {
+        printf("\nO valor %d não está no topo da pilha de origem. Nada a mover.\n", valor);
+        return;
+    }
+
+ 	// Verifica se o valor é maior que o topo da pilha de destino
+    if (!verificarMaior(valor, pilhaDestino)) {
+        printf("\nO valor %d é maior que o valor no topo da pilha de destino. Movimento não permitido.\n", valor);
+        
+        return;
+    }
+
+    // Remove o nó da pilha de origem
+    pop(pilhaOrigem);
+
+    // Adiciona o nó à pilha de destino
+    push(valor, pilhaDestino);
+
+    printf("\nValor %d movido com sucesso da pilha de origem para a pilha de destino.\n", valor);
+}
+
+// Função para verificar se o valor do nó é maior que o valor no topo da pilha
+bool verificarMaior(int valor, tPilha *pilhaDestino) {
+    if (pilhaDestino->topo == NULL) {
+        // A pilha de destino está vazia, qualquer valor pode ser movido
+        return true;
+    }
+
+    // Verifica se o valor do nó é maior que o valor no topo da pilha
+    return valor < pilhaDestino->topo->valor;
 }
 
 // funcao que imprime todos os valores presentes na pilha
