@@ -26,31 +26,10 @@ tPilha criarPilha();
 void push(int, tPilha *);
 void pop(tPilha *);
 void moverNo(tPilha *, tPilha *);
+void verificarVitoria(tPilha*);
 bool verificarMaior(int, tPilha *);
 void exibirPilha(tPilha *);
 void exibirPilhas(tPilha *, tPilha *, tPilha *);
-
-// Função para verificar se todos os discos estão corretamente empilhados na última torre
-bool verificarVitoria(tPilha *pilhaC) {
-    if (pilhaC->topo == NULL) {
-        // A pilha C está vazia, a vitória só é possível se todos os discos foram movidos para lá
-        return false;
-    }
-
-    int disco = numeroDeDiscos;
-    tNo *ptr = pilhaC->topo;
-
-    while (ptr != NULL && disco >= 1) {
-        if (ptr->valor != disco) {
-            return false; // Se o disco não estiver na ordem correta, não é uma vitória
-        }
-
-        disco--;
-        ptr = ptr->prox;
-    }
-
-    return true; // Se todos os discos estão corretamente empilhados, é uma vitória
-}
 
 // Função main -----------
 int main(int argc, char *argv[]) {
@@ -58,7 +37,12 @@ int main(int argc, char *argv[]) {
     tPilha pilhaB = criarPilha();
     tPilha pilhaC = criarPilha();
 
-    int teste;
+    int pilhaOrigem;
+    int pilhaDestino;
+
+    tPilha *p1;
+    tPilha *p2;
+
     // Pergunta o valor de discos ao usuário
     printf("Quantos discos você deseja: ");
     scanf("%d", &numeroDeDiscos);
@@ -69,16 +53,48 @@ int main(int argc, char *argv[]) {
         printf("\n===============================\n");
         printf("-------TORRE DE HANOI--------\n");
         exibirPilhas(&pilhaA, &pilhaB, &pilhaC);
-        scanf("%d", &teste);
         printf("\n===============================\n");
 
         // Verifica a condição de vitória
-        if (verificarVitoria(&pilhaC)) {
+        verificarVitoria(&pilhaC);
+        if (vitoria == 1) {
             printf("Parabéns! Você venceu!\n");
-            vitoria = 1;
         } else {
             // Aqui você pode chamar a função moverNo conforme necessário
-            moverNo(&pilhaA, &pilhaB);
+            printf("insira o numero da pilha de origem: ");
+            scanf("%d", &pilhaOrigem);
+            printf("Insira o número da pilha de destino: ");
+            scanf("%d", &pilhaDestino);
+
+            switch(pilhaOrigem) {
+                case 1:
+                    p1 = &pilhaA;
+                    break;
+                case 2:
+                    p1 = &pilhaB;
+                    break;
+                case 3:
+                    p1 = &pilhaC;
+                    break;
+                default:
+                    printf("\n pilha invalida \n");
+                    break;
+            }
+            switch(pilhaDestino) {
+                case 1:
+                    p2 = &pilhaA;
+                    break;
+                case 2:
+                    p2 = &pilhaB;
+                    break;
+                case 3:
+                    p2 = &pilhaC;
+                    break;
+                default:
+                    printf("\n pilha invalida \n");
+                    break;
+            }
+            moverNo(p1, p2);
         }
     } while (vitoria != 1);
 
@@ -87,6 +103,28 @@ int main(int argc, char *argv[]) {
 
 
 // Funcoes -----------
+
+// Função para verificar se todos os discos estão corretamente empilhados na última torre
+void verificarVitoria(tPilha *pilhaC) {
+    if (pilhaC->topo == NULL) {
+        // A pilha C está vazia, a vitória só é possível se todos os discos foram movidos para lá
+        return;
+    }
+
+    int verifica = 0;
+    tNo *ptr = pilhaC->topo;
+
+    while (ptr != NULL) {
+        verifica++;
+        ptr = ptr->prox;
+    }
+    // Caso o numero de discos na pilha C seja o mesmo do numero total, quer dizer que ele empilhou tudo
+    if(verifica == numeroDeDiscos){
+        vitoria = 1;
+    }
+
+}
+
 // Inicializando a pilha, fazendo o topo dela ficar vazio, ou seja, apontar para null
 void inicializarPilha(tPilha *p) {
     p->topo = NULL;
@@ -216,29 +254,34 @@ void exibirPilhas(tPilha *p1, tPilha *p2, tPilha *p3) {
     printf("\n\nTorre 3\n");
     exibirPilha(p3);
 }
-void moverNo(tPilha *pilhaOrigem, tPilha *pilhaDestino) {
-    // Verifica se a pilha de origem não está vazia
-    if (pilhaOrigem->topo == NULL) {
-        printf("\nPilha de origem vazia. Nada a mover.\n");
-        return;
-    }
 
-    int topo1 = pilhaOrigem->topo->valor;
-    int topo2 = (pilhaDestino->topo != NULL) ? pilhaDestino->topo->valor : numeroDeDiscos + 1;
+// void moverNo(tPilha *pilhaOrigem, tPilha *pilhaDestino) {
+//     tPilha pilhaA = criarPilha();
+//     tPilha pilhaB = criarPilha();
+//     tPilha pilhaC = criarPilha();
 
-    // Verifica se o valor é maior que o topo da pilha de destino
-    if (topo1 > topo2) {
-        printf("\nO valor é maior que o valor no topo da pilha de destino. Movimento não permitido.\n");
-        return;
-    }
+//     // Verifica se a pilha de origem não está vazia
+//     if (pilhaOrigem->topo == NULL) {
+//         printf("\nPilha de origem vazia. Nada a mover.\n");
+//         return;
+//     }
 
-    // Remove o nó da pilha de origem
-    pop(pilhaOrigem);
+//     int topo1 = pilhaOrigem->topo->valor;
+//     int topo2 = (pilhaDestino->topo != NULL) ? pilhaDestino->topo->valor : numeroDeDiscos + 1;
 
-    // Adiciona o nó à pilha de destino
-    push(topo1, pilhaDestino);
+//     // Verifica se o valor é maior que o topo da pilha de destino
+//     if (topo1 > topo2) {
+//         printf("\nO valor é maior que o valor no topo da pilha de destino. Movimento não permitido.\n");
+//         return;
+//     }
 
-    // Imprime informação sobre o movimento
-    printf("\nMovendo disco %d da Torre %d para a Torre %d\n", topo1, pilhaOrigem == &pilhaA ? 1 : (pilhaOrigem == &pilhaB ? 2 : 3),
-           pilhaDestino == &pilhaA ? 1 : (pilhaDestino == &pilhaB ? 2 : 3));
-}
+//     // Remove o nó da pilha de origem
+//     pop(pilhaOrigem);
+
+//     // Adiciona o nó à pilha de destino
+//     push(topo1, pilhaDestino);
+
+//     // Imprime informação sobre o movimento
+//     printf("\nMovendo disco %d da Torre %d para a Torre %d\n", topo1, pilhaOrigem == &pilhaA ? 1 : (pilhaOrigem == &pilhaB ? 2 : 3),
+//            pilhaDestino == &pilhaA ? 1 : (pilhaDestino == &pilhaB ? 2 : 3));
+// }
