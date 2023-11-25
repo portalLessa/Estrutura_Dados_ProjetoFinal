@@ -216,3 +216,29 @@ void exibirPilhas(tPilha *p1, tPilha *p2, tPilha *p3) {
     printf("\n\nTorre 3\n");
     exibirPilha(p3);
 }
+void moverNo(tPilha *pilhaOrigem, tPilha *pilhaDestino) {
+    // Verifica se a pilha de origem não está vazia
+    if (pilhaOrigem->topo == NULL) {
+        printf("\nPilha de origem vazia. Nada a mover.\n");
+        return;
+    }
+
+    int topo1 = pilhaOrigem->topo->valor;
+    int topo2 = (pilhaDestino->topo != NULL) ? pilhaDestino->topo->valor : numeroDeDiscos + 1;
+
+    // Verifica se o valor é maior que o topo da pilha de destino
+    if (topo1 > topo2) {
+        printf("\nO valor é maior que o valor no topo da pilha de destino. Movimento não permitido.\n");
+        return;
+    }
+
+    // Remove o nó da pilha de origem
+    pop(pilhaOrigem);
+
+    // Adiciona o nó à pilha de destino
+    push(topo1, pilhaDestino);
+
+    // Imprime informação sobre o movimento
+    printf("\nMovendo disco %d da Torre %d para a Torre %d\n", topo1, pilhaOrigem == &pilhaA ? 1 : (pilhaOrigem == &pilhaB ? 2 : 3),
+           pilhaDestino == &pilhaA ? 1 : (pilhaDestino == &pilhaB ? 2 : 3));
+}
