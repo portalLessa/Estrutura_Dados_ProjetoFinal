@@ -1,5 +1,5 @@
 # Estrutura_Dados_ProjetoFinal
-implementação de uma torre de hanoi em linguagem C
+Implementação de uma Torre de Hanói em Linguagem C
 
 Torre de Hanói
 
